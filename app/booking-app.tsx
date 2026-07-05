@@ -256,7 +256,7 @@ export function BookingApp() {
           <span className="eyebrow">
             <Sparkles size={16} /> Programari de noapte pentru gene
           </span>
-          <h1>Da, eu sunt Patri Gene</h1>
+          <h1>Da, chiar eu sunt Patri Gene trecuta in telefon</h1>
           <p>
             Program flexibil dupa 18:00 pana la 04:00 in timpul saptamanii,
             iar sambata si duminica toata ziua. Stam si toata noaptea daca
