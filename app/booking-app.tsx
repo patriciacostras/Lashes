@@ -257,7 +257,7 @@ export function BookingApp() {
                 alt="LustLashes goth pink lash artwork"
                 className="kitty-hero-image"
                 onError={() => setHasHeroImage(false)}
-                src="/lustlashes-hero.png"
+                src="/lustlashes-logo-small.png"
               />
             ) : (
               <div className="mascot" aria-hidden="true">
