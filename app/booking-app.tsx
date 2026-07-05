@@ -198,7 +198,7 @@ export function BookingApp() {
 
     setStatus({
       type: "ok",
-      text: "Programarea a fost trimisa. O poti confirma din admin."
+      text: "Programarea a fost trimisa. Daca ai trecut emailul, primesti confirmarea si acolo."
     });
     setForm({ clientName: "", clientPhone: "", clientEmail: "", notes: "" });
     setIsSubmitting(false);
@@ -286,7 +286,7 @@ export function BookingApp() {
       <section className="section" id="servicii">
         <div className="section-title">
           <h2>Servicii</h2>
-          <p>Timpii sunt ganditi mai lejer pentru un lash tech la inceput, ca fiecare set sa iasa curat.</p>
+          <p>Alege setul sau intretinerea potrivita pentru stilul tau.</p>
         </div>
         <div className="service-sections">
           {groupServices(services).map((group) => (
@@ -303,7 +303,7 @@ export function BookingApp() {
                       <span className="pill">
                         <Clock size={14} /> {service.durationMin} min
                       </span>
-                      <span className="pill">{service.priceRon} RON</span>
+                      <span className="pill">{formatServicePrice(service)}</span>
                     </div>
                   </article>
                 ))}
@@ -335,7 +335,7 @@ export function BookingApp() {
                 >
                   {services.map((service) => (
                     <option key={service.id} value={service.id}>
-                      {service.name} - {service.priceRon} RON
+                      {service.name} - {formatServicePrice(service)}
                     </option>
                   ))}
                 </select>
@@ -360,7 +360,7 @@ export function BookingApp() {
                 />
               </label>
               <label className="field full">
-                Email optional
+                Email pentru confirmare
                 <input
                   type="email"
                   value={form.clientEmail}
@@ -444,7 +444,7 @@ export function BookingApp() {
             </div>
             <div className="slot-heading">
               <strong>Ore disponibile</strong>
-              <span>Luni-vineri 18:00-04:00, weekend non-stop.</span>
+              <span>Sloturile apar din 2 in 2 ore. Luni-vineri 18:00-04:00, weekend non-stop.</span>
             </div>
             <div className="slot-grid">
               {slots.length > 0 ? (
@@ -468,12 +468,12 @@ export function BookingApp() {
 
       <section className="section" id="reguli">
         <div className="section-title">
-          <h2>Reguli gene</h2>
+          <h2>Rules to be followed</h2>
           <p>Ca setul sa arate curat si sa tina cat mai frumos, vino pregatita si ingrijeste-l bland dupa aplicare.</p>
         </div>
         <div className="care-grid">
           <article className="care-card">
-            <h3>Inainte de aplicare</h3>
+            <h3>Before application</h3>
             <ul>
               <li>Vino cu genele curate, fara mascara, eyeliner sau lipici de gene false.</li>
               <li>Evita cremele si produsele uleioase in zona ochilor in ziua programarii.</li>
@@ -482,13 +482,24 @@ export function BookingApp() {
             </ul>
           </article>
           <article className="care-card">
-            <h3>Dupa aplicare</h3>
+            <h3>After application</h3>
             <ul>
-              <li>Nu freca ochii si nu trage de extensii; usuca-le prin tamponare usoara.</li>
-              <li>Curata genele cu o spuma speciala si perie-le bland cand sunt uscate.</li>
-              <li>Evita produsele pe baza de ulei in jurul ochilor, pentru ca pot slabi adezivul.</li>
-              <li>Programeaza intretinerea la 2-3 saptamani ca setul sa ramana uniform.</li>
+              <li>Anunta inainte de programare daca doresti si demontarea extensiilor vechi.</li>
+              <li>Intretinerea este recomandata la 3-4 saptamani, cand ai 40-60% gene pastrate si aspectul general este ingrijit.</li>
+              <li>Daca au ramas mai putin de 40% gene sau au trecut peste 4 saptamani, este recomandat set nou.</li>
+              <li>Nu freca ochii, nu trage de extensii si evita produsele pe baza de ulei in jurul ochilor.</li>
             </ul>
+          </article>
+          <article className="care-card retention-card" aria-label="Criterii refill sau set nou">
+            <h3>Refill or new set?</h3>
+            <div className="retention-visual">
+              <span className="retention-row full" />
+              <span className="retention-label">Set complet: gene dense, uniforme</span>
+              <span className="retention-row refill" />
+              <span className="retention-label">Optim pentru intretinere: 40-60% gene pastrate</span>
+              <span className="retention-row new-set" />
+              <span className="retention-label">Set nou: mai putin de 40%, aspect neregulat</span>
+            </div>
           </article>
         </div>
       </section>
@@ -531,7 +542,7 @@ function buildSlotsForDate(date: Date, durationMin: number, blockedSlots: Blocke
     return slots;
   }
 
-  for (let hour = 0; hour < 24; hour += 1) {
+  for (let hour = 0; hour < 24; hour += 2) {
     const slot = new Date(date);
     slot.setHours(hour, 0, 0, 0);
     const endsAt = new Date(slot.getTime() + durationMin * 60 * 1000);
@@ -551,6 +562,10 @@ function buildSlotsForDate(date: Date, durationMin: number, blockedSlots: Blocke
   }
 
   return slots;
+}
+
+function formatServicePrice(service: Service) {
+  return service.priceRon > 0 ? `${service.priceRon} RON` : "pret la DM";
 }
 
 function buildCalendarDays({

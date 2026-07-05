@@ -479,7 +479,7 @@ h1 {
 .care-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .care-card {
@@ -507,6 +507,50 @@ h1 {
 
 .care-card li::marker {
   color: var(--pink-strong);
+}
+
+.retention-card {
+  background:
+    linear-gradient(180deg, rgba(255, 127, 196, 0.14), rgba(22, 6, 17, 0.96)),
+    var(--panel);
+}
+
+.retention-visual {
+  display: grid;
+  gap: 9px;
+}
+
+.retention-row {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 241, 248, 0.9) 0 18%, transparent 19%),
+    repeating-radial-gradient(ellipse at center, #1a0a13 0 2px, transparent 3px 7px);
+  border: 2px solid #ff9bcc;
+  border-radius: 999px 999px 36px 36px;
+  box-shadow: inset 0 -18px 24px rgba(255, 127, 196, 0.12);
+  display: block;
+  height: 70px;
+  overflow: hidden;
+}
+
+.retention-row.full {
+  background-size: 100% 100%, 12px 18px;
+}
+
+.retention-row.refill {
+  background-size: 100% 100%, 18px 26px;
+  opacity: 0.88;
+}
+
+.retention-row.new-set {
+  background-size: 100% 100%, 34px 38px;
+  opacity: 0.76;
+}
+
+.retention-label {
+  color: #ffd7ea;
+  font-size: 0.84rem;
+  font-weight: 900;
+  line-height: 1.35;
 }
 
 .service-group {

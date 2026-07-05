@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     smtp_password: Optional[str] = Field(default=None, alias="SMTP_PASSWORD")
     smtp_from_email: Optional[str] = Field(default=None, alias="SMTP_FROM_EMAIL")
     smtp_use_tls: bool = Field(default=True, alias="SMTP_USE_TLS")
-    access_token_minutes: int = 60 * 8
+    access_token_minutes: int = Field(default=120, alias="ACCESS_TOKEN_MINUTES")
     csrf_cookie_name: str = "lustlashes_csrf"
     auth_cookie_name: str = "lustlashes_session"
 

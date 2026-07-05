@@ -29,7 +29,9 @@ def sync_default_services(db: Session) -> None:
 
 
 def list_active_services(db: Session) -> list[Service]:
-    return list(db.scalars(select(Service).where(Service.is_active.is_(True)).order_by(Service.price_ron)))
+    service_order = {service["id"]: index for index, service in enumerate(DEFAULT_SERVICES)}
+    services = list(db.scalars(select(Service).where(Service.is_active.is_(True))))
+    return sorted(services, key=lambda service: service_order.get(service.id, len(service_order)))
 
 
 def get_service(db: Session, service_id: str) -> Optional[Service]:

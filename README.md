@@ -64,7 +64,13 @@ python -m scripts.hash_password
 
 Pune hash-ul rezultat in `backend/.env` la `ADMIN_PASSWORD_HASH`.
 
-Genereaza si un secret lung pentru `JWT_SECRET_KEY`, apoi configureaza emailul:
+Genereaza si un secret lung pentru `JWT_SECRET_KEY`. Sesiunea admin expira implicit dupa 2 ore:
+
+```bash
+ACCESS_TOKEN_MINUTES="120"
+```
+
+Configureaza emailul:
 
 ```bash
 ADMIN_EMAIL="lustlashes70@gmail.com"
@@ -88,6 +94,14 @@ Admin securizat:
 ```txt
 http://localhost:8000/admin
 ```
+
+Cum functioneaza admin:
+
+- Clientele nu au cont si nu se autentifica.
+- Adminul se logheaza cu `ADMIN_USERNAME` si parola aleasa de tine.
+- Parola nu se salveaza in clar, ci ca hash bcrypt in `ADMIN_PASSWORD_HASH`.
+- Dupa login, backend-ul creeaza automat un JWT si il pune intr-un cookie `HttpOnly`.
+- Cookie-ul expira dupa `ACCESS_TOKEN_MINUTES`; default este 120 minute.
 
 API:
 
