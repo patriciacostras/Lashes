@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: sqlite+pysqlite:///:memory:
+      JWT_SECRET_KEY: test-secret-key-with-more-than-32-characters
+      ADMIN_USERNAME: patri
+      ADMIN_PASSWORD_HASH: $2b$12$7i4i2dCInNzfpiujGf.2C.0QUhTceUvff4ihxHvz9RB6GQg3B9wlG
+      ADMIN_EMAIL: lustlashes70@gmail.com
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8000
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+      NEXT_PUBLIC_BACKEND_ADMIN_URL: http://localhost:8000/admin
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install backend dependencies
+        run: pip install -r backend/requirements-dev.txt
+
+      - name: Backend tests
+        working-directory: backend
+        run: pytest --cov=app --cov-report=term-missing --cov-fail-under=90
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Next build
+        run: npm run build

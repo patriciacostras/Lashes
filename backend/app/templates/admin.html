@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LustLashes Admin</title>
+    <style>
+      body {
+        background: linear-gradient(135deg, #130510, #3a1028 55%, #090306);
+        color: #fff1f8;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        margin: 0;
+      }
+      header, main { margin: 0 auto; max-width: 1100px; padding: 20px; }
+      header { align-items: center; display: flex; justify-content: space-between; gap: 16px; }
+      h1 { margin: 0; }
+      h2 { margin: 0 0 12px; }
+      form { margin: 0; }
+      button {
+        background: #ff3193;
+        border: 2px solid #fff1f8;
+        border-radius: 999px;
+        color: white;
+        cursor: pointer;
+        font-weight: 900;
+        padding: 10px 14px;
+      }
+      input {
+        background: #130510;
+        border: 2px solid #ff72b6;
+        border-radius: 8px;
+        color: #fff1f8;
+        padding: 10px 12px;
+        width: 100%;
+      }
+      label {
+        color: #f7b7d5;
+        display: grid;
+        font-weight: 900;
+        gap: 6px;
+      }
+      .panel {
+        background: rgba(22, 6, 17, 0.96);
+        border: 2px solid #ff9bcc;
+        border-radius: 8px;
+        box-shadow: 8px 8px 0 #c51673;
+        display: grid;
+        gap: 14px;
+        margin-bottom: 22px;
+        padding: 16px;
+      }
+      .vacation-form {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .vacation-form button {
+        align-self: end;
+      }
+      .list { display: grid; gap: 12px; }
+      article {
+        background: rgba(22, 6, 17, 0.96);
+        border: 2px solid #ff9bcc;
+        border-radius: 8px;
+        display: grid;
+        gap: 10px;
+        padding: 14px;
+      }
+      .meta { color: #f7b7d5; }
+      .blocked-list {
+        color: #ffd7ea;
+        display: grid;
+        gap: 6px;
+      }
+      @media (max-width: 680px) {
+        header { align-items: stretch; flex-direction: column; }
+        .vacation-form { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>LustLashes Admin</h1>
+      <form method="post" action="/admin/logout">
+        <button type="submit">Logout</button>
+      </form>
+    </header>
+    <main>
+      <section class="panel">
+        <h2>Concediu</h2>
+        <form class="vacation-form" method="post" action="/admin/blocked-slots">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <label>
+            De la
+            <input required type="date" name="starts_at">
+          </label>
+          <label>
+            Pana la
+            <input required type="date" name="ends_at">
+          </label>
+          <label>
+            Motiv
+            <input maxlength="240" name="reason" value="Concediu">
+          </label>
+          <button type="submit">Blocheaza</button>
+        </form>
+        <div class="blocked-list">
+          {% for blocked_slot in blocked_slots %}
+            <span>{{ blocked_slot.starts_at }} - {{ blocked_slot.ends_at }} | {{ blocked_slot.reason or "Concediu" }}</span>
+          {% else %}
+            <span>Nu ai concedii setate in urmatoarele luni.</span>
+          {% endfor %}
+        </div>
+      </section>
+      <div class="list">
+        {% for appointment in appointments %}
+          <article>
+            <strong>{{ appointment.client_name }} - {{ appointment.service.name }}</strong>
+            <span class="meta">{{ appointment.starts_at }} | {{ appointment.client_phone }} | {{ appointment.status.value }}</span>
+            {% if appointment.notes %}<span>{{ appointment.notes }}</span>{% endif %}
+          </article>
+        {% else %}
+          <article>Nu exista programari inca.</article>
+        {% endfor %}
+      </div>
+    </main>
+  </body>
+</html>

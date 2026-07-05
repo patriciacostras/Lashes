@@ -1,0 +1,13 @@
+.next
+node_modules
+.env
+.env.local
+*.log
+.DS_Store
+tsconfig.tsbuildinfo
+prisma/dev.db
+.coverage
+htmlcov
+__pycache__
+.pytest_cache
+.venv
