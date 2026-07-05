@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LustLashes Admin Login</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon.png">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16.png">
+    <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
     <style>
       body {
         background: linear-gradient(135deg, #130510, #3a1028 55%, #090306);
@@ -27,6 +31,18 @@
       }
       h1 { margin: 0; font-size: 2rem; }
       label { display: grid; gap: 6px; font-weight: 800; }
+      label.inline {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        justify-content: flex-start;
+      }
+      input[type="checkbox"] {
+        accent-color: #ff3193;
+        height: 18px;
+        width: 18px;
+      }
       input {
         background: #130510;
         border: 2px solid #ff72b6;
@@ -57,6 +73,10 @@
       <label>
         Parola
         <input autocomplete="current-password" name="password" required type="password">
+      </label>
+      <label class="inline">
+        <input name="remember_me" type="checkbox" value="on">
+        Tine-ma conectata 7 zile
       </label>
       <button type="submit">Intra in admin</button>
     </form>

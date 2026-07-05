@@ -5,6 +5,7 @@ from zoneinfo import ZoneInfo
 from fastapi import BackgroundTasks, Depends, FastAPI, Form, HTTPException, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -49,6 +50,7 @@ app = FastAPI(
     redoc_url=None,
     openapi_url=None,
 )
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 
 @app.middleware("http")
@@ -66,6 +68,12 @@ async def add_security_headers(request: Request, call_next):
         "base-uri 'self'; "
         "frame-ancestors 'none'"
     )
+    if request.url.path.startswith("/admin"):
+        response.headers["Cache-Control"] = (
+            "no-store, no-cache, must-revalidate, max-age=0"
+        )
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
     return response
 
 
@@ -199,6 +207,10 @@ def admin_login_page(
     return page
 
 
+REMEMBER_ME_DAYS = 7
+DEFAULT_SESSION_MINUTES = 120
+
+
 @app.post("/admin/login")
 def admin_login(
     request: Request,
@@ -206,6 +218,7 @@ def admin_login(
     username: str = Form(...),
     password: str = Form(...),
     csrf_token: str = Form(...),
+    remember_me: str = Form("off"),
     settings: Settings = Depends(get_settings),
 ):
     validate_csrf(request, csrf_token, settings)
@@ -224,9 +237,16 @@ def admin_login(
         set_csrf_cookie(page, new_csrf, settings)
         return page
 
-    token = create_access_token(settings.admin_username, settings)
+    stay_logged_in = remember_me.lower() in ("on", "1", "true", "yes")
+    if stay_logged_in:
+        token = create_access_token(settings.admin_username, settings, expires_minutes=REMEMBER_ME_DAYS * 24 * 60)
+        max_age_seconds = REMEMBER_ME_DAYS * 24 * 60 * 60
+    else:
+        token = create_access_token(settings.admin_username, settings, expires_minutes=DEFAULT_SESSION_MINUTES)
+        max_age_seconds = DEFAULT_SESSION_MINUTES * 60
+
     redirect = RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
-    set_auth_cookie(redirect, token, settings)
+    set_auth_cookie(redirect, token, settings, max_age_seconds=max_age_seconds)
     return redirect
 
 

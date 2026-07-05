@@ -11,3 +11,8 @@ htmlcov
 __pycache__
 .pytest_cache
 .venv
+backend/.env
+backend/.venv
+backend/.coverage
+backend/__pycache__
+backend/.pytest_cache

@@ -3,12 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "LustLashes",
-  description: "Programari online pentru gene intr-un studio goth pink.",
-  icons: {
-    icon: "/lustlashes-hero.png",
-    shortcut: "/lustlashes-hero.png",
-    apple: "/lustlashes-hero.png"
-  }
+  description: "Programari online pentru gene intr-un studio goth pink."
 };
 
 export default function RootLayout({
@@ -18,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ro">
-      <body>{children}</body>
+      <body className="page-fade-in">{children}</body>
     </html>
   );
 }

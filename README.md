@@ -102,6 +102,25 @@ Cum functioneaza admin:
 - Parola nu se salveaza in clar, ci ca hash bcrypt in `ADMIN_PASSWORD_HASH`.
 - Dupa login, backend-ul creeaza automat un JWT si il pune intr-un cookie `HttpOnly`.
 - Cookie-ul expira dupa `ACCESS_TOKEN_MINUTES`; default este 120 minute.
+- Bifeaza "Tine-ma conectata 7 zile" in pagina de login pentru o sesiune mai lunga.
+- Daca uiti parola, nu poti sa o recuperezi din cod: genereaza un nou hash cu
+  `python -m scripts.hash_password` si actualizeaza `ADMIN_PASSWORD_HASH`.
+
+Cum generezi parola admin si hash-ul:
+
+```bash
+cd backend
+python -m scripts.hash_password
+# tasteaza parola dorita de 2 ori
+# copiaza hash-ul in backend/.env la ADMIN_PASSWORD_HASH
+```
+
+Cum generezi JWT manual (doar pentru teste/debug):
+
+```bash
+cd backend
+python -c "from app.security import create_access_token; from app.config import get_settings; print(create_access_token('patri', get_settings()))"
+```
 
 API:
 
@@ -132,7 +151,7 @@ Pipeline-ul GitHub Actions este in `.github/workflows/ci.yml`.
 ## Note De Securitate
 
 - Nu pune parola admin in cod.
-- In productie seteaza `COOKIE_SECURE=true`.
+- In productie seteaza `COOKIE_SECURE=true` (obligatoriu pentru HTTPS).
 - Foloseste HTTPS cand ai domeniu.
 - Pastreaza `JWT_SECRET_KEY` lung si privat.
 - Ruleaza `alembic upgrade head` la deploy.
@@ -140,4 +159,21 @@ Pipeline-ul GitHub Actions este in `.github/workflows/ci.yml`.
 - Foloseste un provider SMTP cu app password sau token dedicat, nu parola contului personal.
 - Nu rula `npm run build` in timp ce `npm run dev` este pornit; poate corupe `.next` local.
 
-Pentru productie simpla: frontend pe Vercel, backend pe Render/Fly/Railway/VPS, PostgreSQL managed, domeniu cu HTTPS. Kubernetes nu este necesar pentru acest proiect acum; Docker Compose sau servicii managed sunt suficiente si mai usor de intretinut.
+## Cookies si GDPR
+
+- Site-ul public are un banner de cookies si link catre pagina `Politica cookies`.
+- Pagina `Termeni si conditii` este adaugata in footer.
+- Cookies folosite: sesiune admin (HttpOnly), token CSRF, preferinte functionale.
+
+## Arhitectura: un singur backend
+
+- Frontend-ul nu mai are propriul API. Toate request-urile `/api/*` si `/admin/*` sunt
+  redirectate prin `next.config.ts` catre backend-ul FastAPI.
+- Configureaza `NEXT_PUBLIC_API_BASE_URL` si `NEXT_PUBLIC_BACKEND_ADMIN_URL` pe domeniul
+  backend-ului.
+- Ideal: pune ambele servicii pe acelasi domeniu (frontend pe `/`, backend proxied pe
+  `/api` si `/admin`) ca sa eviti probleme CORS/cookies.
+
+## Productie simpla
+
+Frontend pe Vercel, backend pe Render/Fly/Railway/VPS, PostgreSQL managed, domeniu cu HTTPS. Kubernetes nu este necesar pentru acest proiect acum; Docker Compose sau servicii managed sunt suficiente si mai usor de intretinut.

@@ -10,6 +10,7 @@ import {
   Sparkles,
   WandSparkles
 } from "lucide-react";
+import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { defaultServices, type BookingService } from "@/lib/services";
 
@@ -82,7 +83,8 @@ const retentionExamples = [
   }
 ];
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const adminBaseUrl = process.env.NEXT_PUBLIC_BACKEND_ADMIN_URL ?? "http://localhost:8000/admin";
 
 function apiUrl(path: string) {
   return `${apiBaseUrl}${path}`;
@@ -96,7 +98,6 @@ export function BookingApp() {
   const bookingWindow = useMemo(() => getBookingWindow(), []);
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()));
   const [selectedDateIso, setSelectedDateIso] = useState(() => formatDateKey(new Date()));
-  const [hasBrandLogo, setHasBrandLogo] = useState(true);
   const [hasHeroImage, setHasHeroImage] = useState(true);
   const [form, setForm] = useState({
     clientName: "",
@@ -109,6 +110,13 @@ export function BookingApp() {
     text: "Alege serviciul si intervalul, apoi trimite cererea de programare."
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cookiesAccepted, setCookiesAccepted] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setCookiesAccepted(localStorage.getItem("lustlashes_cookies_ok") === "1");
+  }, []);
 
   useEffect(() => {
     fetch(apiUrl("/api/services"))
@@ -227,51 +235,44 @@ export function BookingApp() {
 
   return (
     <main className="shell">
-      <header className="topbar">
-        <a className="brand" href="#">
-          {hasBrandLogo ? (
-            <img
-              alt="LustLashes logo"
-              className="brand-logo-small"
-              onError={() => setHasBrandLogo(false)}
-              src="/lustlashes-hero.png"
-            />
-          ) : (
-            <span className="brand-mark" aria-hidden="true">
-              <span className="brand-bow" />
-              <span className="cat-face">:3</span>
-            </span>
-          )}
+      <header className="topbar animate-fade-in">
+        <a className="brand hover-glow" href="#">
+          <img
+            alt="LustLashes logo"
+            className="brand-logo-small"
+            src="/brand-logo.png"
+          />
           <span className="brand-name brand-name-text">LustLashes</span>
         </a>
         <nav className="nav" aria-label="Navigatie principala">
-          <a href="#servicii">Servicii</a>
-          <a href="#booking">Booking</a>
-          <a href="/admin">Admin</a>
+          <a className="clickable" href="#servicii">Servicii</a>
+          <a className="clickable" href="#booking">Booking</a>
+          <a className="clickable" href={adminBaseUrl}>Admin</a>
         </nav>
       </header>
 
-      <section className="hero">
+      <section className="hero animate-fade-in">
         <div className="hero-copy">
-          <span className="eyebrow">
+          <span className="eyebrow animate-fade-in-delay-1">
             <Sparkles size={16} /> Programari de noapte pentru gene
           </span>
-          <h1>Da, chiar eu sunt Patri Gene trecuta in telefon</h1>
-          <p>
+          <h1 className="animate-fade-in-delay-2">Da, chiar eu sunt Patri Gene</h1>
+          <p className="animate-fade-in-delay-3">
             Program flexibil dupa 18:00 pana la 04:00 in timpul saptamanii,
             iar sambata si duminica toata ziua. Stam si toata noaptea daca
-            e nevoie si nu mai gasesti loc nicaieri.
+            e nevoie si nu mai gasesti loc nicaieri. Genele colorate sunt
+            welcomed oricand — spune-mi ce nuanta vrei.
           </p>
           <div className="hero-actions">
-            <a className="primary-button" href="#booking">
+            <a className="primary-button clickable" href="#booking">
               <CalendarCheck size={18} /> Programeaza-te
             </a>
-            <a className="ghost-button" href={INSTAGRAM_URL}>
+            <a className="ghost-button clickable" href={INSTAGRAM_URL}>
               <Instagram size={18} /> @{INSTAGRAM_HANDLE}
             </a>
           </div>
         </div>
-        <aside className="hero-panel" aria-label="Preview studio">
+        <aside className="hero-panel animate-fade-in-delay-1 hover-lift" aria-label="Preview studio">
           <div className="hero-image-card">
             {hasHeroImage ? (
               <img
@@ -288,15 +289,15 @@ export function BookingApp() {
             )}
           </div>
           <div className="mini-stats">
-            <span className="mini-stat">
+            <span className="mini-stat hover-glow">
               <strong>13</strong>
               <span>servicii</span>
             </span>
-            <span className="mini-stat">
+            <span className="mini-stat hover-glow">
               <strong>18-04</strong>
               <span>program</span>
             </span>
-            <span className="mini-stat">
+            <span className="mini-stat hover-glow">
               <strong>DM</strong>
               <span>@{INSTAGRAM_HANDLE}</span>
             </span>
@@ -304,17 +305,31 @@ export function BookingApp() {
         </aside>
       </section>
 
-      <section className="section" id="servicii">
+      <section className="section animate-fade-in" id="servicii">
         <div className="section-title">
           <h2>Servicii</h2>
           <p>Alege setul sau intretinerea potrivita pentru stilul tau.</p>
         </div>
         <div className="service-sections">
-          {groupServices(services).map((group) => (
-            <section className="service-group" key={group.title}>
+          {groupServices(services).map((group, groupIndex) => (
+            <section className={`service-group animate-fade-in-delay-${Math.min(groupIndex + 1, 3)}`} key={group.title}>
               <h3>
                 <WandSparkles size={18} /> {group.title}
               </h3>
+              {group.title === "Aplicare & intretinere" && (
+                <div className="price-guide">
+                  <span className="price-guide-title">Preturi orientative</span>
+                  <div className="price-guide-row">
+                    <span className="price-guide-label">Aplicare noua:</span>
+                    <span className="price-guide-value">130 - 200 RON (6D+ la DM)</span>
+                  </div>
+                  <div className="price-guide-row">
+                    <span className="price-guide-label">Intretinere / refill:</span>
+                    <span className="price-guide-value">120 - 190 RON (6D+ la DM)</span>
+                  </div>
+                  <span className="price-guide-note">Toate duratele sunt estimative: 120 min.</span>
+                </div>
+              )}
               <div className="service-grid">
                 {group.items.map((service) => (
                   <article className="service-card" key={service.id}>
@@ -334,7 +349,7 @@ export function BookingApp() {
         </div>
       </section>
 
-      <section className="section" id="booking">
+      <section className="section animate-fade-in" id="booking">
         <div className="section-title">
           <h2>Booking</h2>
           <p>
@@ -346,11 +361,12 @@ export function BookingApp() {
           </p>
         </div>
         <div className="booking-layout">
-          <form className="booking-form" onSubmit={submitBooking}>
+          <form className="booking-form hover-lift" onSubmit={submitBooking}>
             <div className="field-grid">
               <label className="field full">
                 Serviciu
                 <select
+                  className="pulse-focus"
                   value={selectedServiceId}
                   onChange={(event) => setSelectedServiceId(event.target.value)}
                 >
@@ -364,6 +380,7 @@ export function BookingApp() {
               <label className="field">
                 Nume
                 <input
+                  className="pulse-focus"
                   required
                   minLength={2}
                   value={form.clientName}
@@ -374,6 +391,7 @@ export function BookingApp() {
               <label className="field">
                 Telefon
                 <input
+                  className="pulse-focus"
                   required
                   value={form.clientPhone}
                   onChange={(event) => setForm({ ...form, clientPhone: event.target.value })}
@@ -383,6 +401,7 @@ export function BookingApp() {
               <label className="field full">
                 Email pentru confirmare
                 <input
+                  className="pulse-focus"
                   type="email"
                   value={form.clientEmail}
                   onChange={(event) => setForm({ ...form, clientEmail: event.target.value })}
@@ -392,6 +411,7 @@ export function BookingApp() {
               <label className="field full">
                 Detalii
                 <textarea
+                  className="pulse-focus"
                   value={form.notes}
                   onChange={(event) => setForm({ ...form, notes: event.target.value })}
                   placeholder="Preferinte, alergii, stil dorit..."
@@ -402,13 +422,13 @@ export function BookingApp() {
               <p className={`status ${status.type === "idle" ? "" : status.type}`}>
                 {status.text}
               </p>
-              <button className="primary-button" disabled={isSubmitting} type="submit">
+              <button className="primary-button clickable" disabled={isSubmitting} type="submit">
                 <CalendarCheck size={18} /> {isSubmitting ? "Se trimite" : "Trimite"}
               </button>
             </div>
           </form>
 
-          <div className="calendar-panel">
+          <div className="calendar-panel hover-lift">
             <div className="section-title">
               <h2>Calendar</h2>
               <p>
@@ -418,7 +438,7 @@ export function BookingApp() {
             <div className="month-toolbar" aria-label="Schimba luna">
               <button
                 aria-label="Luna anterioara"
-                className="icon-button"
+                className="icon-button clickable"
                 disabled={!canGoPrev}
                 onClick={() => setVisibleMonth(addMonths(visibleMonth, -1))}
                 type="button"
@@ -428,7 +448,7 @@ export function BookingApp() {
               <strong>{monthFormatter.format(visibleMonth)}</strong>
               <button
                 aria-label="Luna urmatoare"
-                className="icon-button"
+                className="icon-button clickable"
                 disabled={!canGoNext}
                 onClick={() => setVisibleMonth(addMonths(visibleMonth, 1))}
                 type="button"
@@ -447,6 +467,8 @@ export function BookingApp() {
                   aria-label={`${day.isoDate}${day.isBlocked ? ", concediu" : ""}`}
                   className={[
                     "calendar-day",
+                    "clickable",
+                    "pulse-focus",
                     day.inMonth ? "" : "outside",
                     day.isSelected ? "active" : "",
                     day.isBlocked ? "blocked" : "",
@@ -472,7 +494,7 @@ export function BookingApp() {
               {slots.length > 0 ? (
                 slots.map((slot) => (
                   <button
-                    className={`slot-button ${slot.iso === selectedSlot ? "active" : ""}`}
+                    className={`slot-button clickable pulse-focus ${slot.iso === selectedSlot ? "active" : ""}`}
                     key={slot.iso}
                     onClick={() => setSelectedSlot(slot.iso)}
                     type="button"
@@ -488,7 +510,7 @@ export function BookingApp() {
         </div>
       </section>
 
-      <section className="section" id="reguli">
+      <section className="section animate-fade-in" id="reguli">
         <div className="section-title">
           <h2>Rules to be followed</h2>
           <p>Ca setul sa arate curat si sa tina cat mai frumos, vino pregatita si ingrijeste-l bland dupa aplicare.</p>
@@ -496,7 +518,7 @@ export function BookingApp() {
         <div className="care-grid">
           <article className="care-card">
             <h3>Before application</h3>
-            <ul>
+            <ul className="care-list">
               <li>Vino cu genele curate, fara mascara, eyeliner sau lipici de gene false.</li>
               <li>Evita cremele si produsele uleioase in zona ochilor in ziua programarii.</li>
               <li>Nu iti ondula genele inainte de aplicare si anunta-ma daca ai alergii sau ochi sensibili.</li>
@@ -506,7 +528,7 @@ export function BookingApp() {
           </article>
           <article className="care-card">
             <h3>After application</h3>
-            <ul>
+            <ul className="care-list">
               <li>Intretinerea este recomandata la 3-4 saptamani, cand ai 40-60% gene pastrate si aspectul general este ingrijit.</li>
               <li>Daca au ramas mai putin de 40% gene sau au trecut peste 4 saptamani, este recomandat set nou.</li>
               <li>Nu freca ochii, nu trage de extensii si evita produsele pe baza de ulei in jurul ochilor.</li>
@@ -534,12 +556,40 @@ export function BookingApp() {
         </div>
       </section>
 
-      <footer className="site-footer">
+      {mounted && !cookiesAccepted && (
+        <div className="cookie-banner animate-fade-in" role="region" aria-label="Cookies">
+          <p>
+            Acest site foloseste cookies necesare pentru functionare si securitate.
+            <a className="cookie-banner-link" href="/politica-cookies">
+              Afla mai multe
+            </a>
+          </p>
+          <button
+            className="cookie-banner-button"
+            onClick={() => {
+              localStorage.setItem("lustlashes_cookies_ok", "1");
+              setCookiesAccepted(true);
+            }}
+            type="button"
+          >
+            Am inteles
+          </button>
+        </div>
+      )}
+      <footer className="site-footer animate-fade-in">
         <div>
           <strong>LustLashes</strong>
           <span>programari flexibile pentru gene 1D-6D+, intretinere si demontare</span>
+          <nav className="footer-legal" aria-label="Informatii legale">
+            <Link className="footer-link" href="/politica-cookies">
+              Politica cookies
+            </Link>
+            <Link className="footer-link" href="/termeni-si-conditii">
+              Termeni si conditii
+            </Link>
+          </nav>
         </div>
-        <a href={INSTAGRAM_URL}>
+        <a className="clickable" href={INSTAGRAM_URL}>
           <Instagram size={18} /> @{INSTAGRAM_HANDLE}
         </a>
       </footer>
@@ -548,20 +598,23 @@ export function BookingApp() {
 }
 
 function groupServices(services: Service[]) {
-  return [
-    {
-      title: "Aplicare gene",
-      items: services.filter((service) => service.name.startsWith("Extensii"))
-    },
-    {
-      title: "Intretinere",
-      items: services.filter((service) => service.name.startsWith("Intretinere"))
-    },
-    {
-      title: "Demontare",
-      items: services.filter((service) => service.name.startsWith("Demontare"))
-    }
-  ].filter((group) => group.items.length > 0);
+  const application = services.filter((service) => service.name.startsWith("Extensii"));
+  const maintenance = services.filter((service) => service.name.startsWith("Intretinere"));
+  const removal = services.filter((service) => service.name.startsWith("Demontare"));
+  const groups: { title: string; items: Service[] }[] = [];
+
+  if (application.length > 0 || maintenance.length > 0) {
+    groups.push({
+      title: "Aplicare & intretinere",
+      items: [...application, ...maintenance]
+    });
+  }
+
+  if (removal.length > 0) {
+    groups.push({ title: "Demontare", items: removal });
+  }
+
+  return groups;
 }
 
 function buildSlotsForDate(date: Date, durationMin: number, blockedSlots: BlockedSlot[]) {

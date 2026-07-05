@@ -25,25 +25,27 @@ def hash_password(plain_password: str) -> str:
     return pwd_context.hash(plain_password)
 
 
-def create_access_token(subject: str, settings: Settings) -> str:
+def create_access_token(subject: str, settings: Settings, expires_minutes: int | None = None) -> str:
     now = datetime.now(timezone.utc)
     payload = {
         "sub": subject,
         "iat": int(now.timestamp()),
-        "exp": int((now + timedelta(minutes=settings.access_token_minutes)).timestamp()),
+        "exp": int((now + timedelta(minutes=expires_minutes or settings.access_token_minutes)).timestamp()),
         "typ": "access",
     }
     return jwt.encode(payload, settings.jwt_secret_key, algorithm=JWT_ALGORITHM)
 
 
-def set_auth_cookie(response: Response, token: str, settings: Settings) -> None:
+def set_auth_cookie(
+    response: Response, token: str, settings: Settings, max_age_seconds: int | None = None
+) -> None:
     response.set_cookie(
         settings.auth_cookie_name,
         token,
         httponly=True,
         secure=settings.cookie_secure,
         samesite="lax",
-        max_age=settings.access_token_minutes * 60,
+        max_age=max_age_seconds if max_age_seconds is not None else settings.access_token_minutes * 60,
         path="/",
     )
 
