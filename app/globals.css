@@ -517,7 +517,22 @@ h1 {
 
 .retention-visual {
   display: grid;
-  gap: 9px;
+  gap: 12px;
+}
+
+.retention-example {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.retention-example img {
+  aspect-ratio: 16 / 7;
+  border: 2px solid #ff9bcc;
+  border-radius: 8px;
+  display: block;
+  object-fit: cover;
+  width: 100%;
 }
 
 .retention-row {
@@ -530,6 +545,10 @@ h1 {
   display: block;
   height: 70px;
   overflow: hidden;
+}
+
+.retention-row[hidden] {
+  display: none;
 }
 
 .retention-row.full {
@@ -546,11 +565,12 @@ h1 {
   opacity: 0.76;
 }
 
-.retention-label {
+.retention-example figcaption {
   color: #ffd7ea;
   font-size: 0.84rem;
   font-weight: 900;
   line-height: 1.35;
+  margin: 0;
 }
 
 .service-group {

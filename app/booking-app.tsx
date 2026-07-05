@@ -60,6 +60,26 @@ const INSTAGRAM_HANDLE = "lustlashestimisoara";
 const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`;
 const BOOKING_WINDOW_MONTHS = 1;
 const weekdayLabels = ["L", "M", "M", "J", "V", "S", "D"];
+const retentionExamples = [
+  {
+    src: "/retention-100.png",
+    alt: "Set complet cu gene dense si uniforme",
+    label: "Set complet: gene dense, uniforme",
+    kind: "full"
+  },
+  {
+    src: "/retention-60.png",
+    alt: "Intretinere potrivita cu 40-60% gene pastrate",
+    label: "Optim pentru intretinere: 40-60% gene pastrate",
+    kind: "refill"
+  },
+  {
+    src: "/retention-40.png",
+    alt: "Set nou recomandat cu mai putin de 40% gene ramase",
+    label: "Set nou: mai putin de 40%, aspect neregulat",
+    kind: "new-set"
+  }
+];
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
@@ -478,13 +498,13 @@ export function BookingApp() {
               <li>Vino cu genele curate, fara mascara, eyeliner sau lipici de gene false.</li>
               <li>Evita cremele si produsele uleioase in zona ochilor in ziua programarii.</li>
               <li>Nu iti ondula genele inainte de aplicare si anunta-ma daca ai alergii sau ochi sensibili.</li>
+              <li>Anunta inainte de programare daca doresti si demontarea extensiilor vechi.</li>
               <li>Planifica-ti timp lejer, mai ales pentru seturile 4D, 5D si 6D+.</li>
             </ul>
           </article>
           <article className="care-card">
             <h3>After application</h3>
             <ul>
-              <li>Anunta inainte de programare daca doresti si demontarea extensiilor vechi.</li>
               <li>Intretinerea este recomandata la 3-4 saptamani, cand ai 40-60% gene pastrate si aspectul general este ingrijit.</li>
               <li>Daca au ramas mai putin de 40% gene sau au trecut peste 4 saptamani, este recomandat set nou.</li>
               <li>Nu freca ochii, nu trage de extensii si evita produsele pe baza de ulei in jurul ochilor.</li>
@@ -493,12 +513,20 @@ export function BookingApp() {
           <article className="care-card retention-card" aria-label="Criterii refill sau set nou">
             <h3>Refill or new set?</h3>
             <div className="retention-visual">
-              <span className="retention-row full" />
-              <span className="retention-label">Set complet: gene dense, uniforme</span>
-              <span className="retention-row refill" />
-              <span className="retention-label">Optim pentru intretinere: 40-60% gene pastrate</span>
-              <span className="retention-row new-set" />
-              <span className="retention-label">Set nou: mai putin de 40%, aspect neregulat</span>
+              {retentionExamples.map((example) => (
+                <figure className={`retention-example ${example.kind}`} key={example.src}>
+                  <img
+                    alt={example.alt}
+                    src={example.src}
+                    onError={(event) => {
+                      event.currentTarget.hidden = true;
+                      event.currentTarget.nextElementSibling?.removeAttribute("hidden");
+                    }}
+                  />
+                  <span className={`retention-row ${example.kind}`} hidden />
+                  <figcaption>{example.label}</figcaption>
+                </figure>
+              ))}
             </div>
           </article>
         </div>
