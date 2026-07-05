@@ -477,6 +477,7 @@ h1 {
 }
 
 .care-grid {
+  align-items: start;
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -590,18 +591,23 @@ h1 {
 
 .service-grid {
   display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  grid-template-columns: 1fr;
 }
 
 .service-card {
-  background: var(--panel);
-  border: 2px solid var(--ink);
+  align-items: center;
+  background:
+    linear-gradient(90deg, rgba(255, 127, 196, 0.08), rgba(22, 6, 17, 0.92)),
+    var(--panel);
+  border: 1px solid rgba(255, 193, 221, 0.82);
   border-radius: 8px;
-  box-shadow: 0 9px 0 #9e0e5a;
+  box-shadow: 0 5px 0 rgba(158, 14, 90, 0.8);
   display: grid;
-  gap: 14px;
-  padding: 16px;
+  gap: 12px;
+  grid-template-columns: minmax(160px, 0.8fr) minmax(180px, 1fr) auto;
+  min-height: 78px;
+  padding: 12px 14px;
 }
 
 .service-card h4 {
@@ -611,7 +617,7 @@ h1 {
 
 .service-card p {
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   line-height: 1.45;
   margin: 0;
 }
@@ -621,6 +627,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  justify-content: flex-end;
 }
 
 .pill {
@@ -651,6 +658,12 @@ h1 {
   border-radius: 8px;
   box-shadow: var(--shadow);
   padding: 18px;
+}
+
+.calendar-panel {
+  box-shadow:
+    0 22px 60px rgba(255, 49, 147, 0.28),
+    8px 8px 0 rgba(197, 22, 115, 0.78);
 }
 
 .field-grid {
@@ -751,6 +764,19 @@ textarea:focus {
 
 .calendar-day.outside {
   opacity: 0.34;
+}
+
+.calendar-day.past {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 241, 248, 0.06) 0 7px,
+      rgba(22, 6, 17, 0.9) 7px 14px
+    ),
+    #10050c;
+  border-color: rgba(255, 193, 221, 0.34);
+  color: rgba(255, 241, 248, 0.45);
+  opacity: 0.58;
 }
 
 .calendar-day.active {
@@ -947,7 +973,6 @@ select option {
     width: 100%;
   }
 
-  .service-grid,
   .care-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1024,12 +1049,20 @@ select option {
   }
 
   .mini-stats,
-  .service-grid,
   .care-grid,
   .field-grid,
   .slot-grid,
   .appointment-row {
     grid-template-columns: 1fr;
+  }
+
+  .service-card {
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+
+  .service-meta {
+    justify-content: flex-start;
   }
 
   .mascot {

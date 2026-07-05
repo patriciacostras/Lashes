@@ -38,6 +38,7 @@ type CalendarDay = {
   inMonth: boolean;
   isBlocked: boolean;
   isDisabled: boolean;
+  isPast: boolean;
   isSelected: boolean;
 };
 
@@ -448,7 +449,8 @@ export function BookingApp() {
                     "calendar-day",
                     day.inMonth ? "" : "outside",
                     day.isSelected ? "active" : "",
-                    day.isBlocked ? "blocked" : ""
+                    day.isBlocked ? "blocked" : "",
+                    day.isPast ? "past" : ""
                   ]
                     .filter(Boolean)
                     .join(" ")}
@@ -630,6 +632,7 @@ function buildCalendarDays({
       inMonth,
       isBlocked,
       isDisabled: !inMonth || isPast || isBeyondWindow || isBlocked,
+      isPast,
       isSelected: selectedDateIso === isoDate
     };
   });
