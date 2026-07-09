@@ -625,7 +625,7 @@ function buildSlotsForDate(date: Date, durationMin: number, blockedSlots: Blocke
     return slots;
   }
 
-  for (let hour = 0; hour < 24; hour += 2) {
+  for (const hour of getDisplayHours(date)) {
     const slot = new Date(date);
     slot.setHours(hour, 0, 0, 0);
     const endsAt = new Date(slot.getTime() + durationMin * 60 * 1000);
@@ -645,6 +645,19 @@ function buildSlotsForDate(date: Date, durationMin: number, blockedSlots: Blocke
   }
 
   return slots;
+}
+
+function getDisplayHours(date: Date) {
+  const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+  return isWeekend ? rangeHours(0, 24, 2) : [18, 20, 22, 0, 2];
+}
+
+function rangeHours(start: number, end: number, step: number) {
+  const hours: number[] = [];
+  for (let hour = start; hour < end; hour += step) {
+    hours.push(hour);
+  }
+  return hours;
 }
 
 function formatServicePrice(service: Service) {

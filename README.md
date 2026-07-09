@@ -74,13 +74,19 @@ Configureaza emailul:
 
 ```bash
 ADMIN_EMAIL="lustlashes70@gmail.com"
-SMTP_HOST="smtp.provider.ro"
+SMTP_HOST="smtp.gmail.com"
 SMTP_PORT="587"
-SMTP_USERNAME="user"
-SMTP_PASSWORD="parola-sau-app-password"
+SMTP_USERNAME="lustlashes70@gmail.com"
+SMTP_PASSWORD="app-password-google"
 SMTP_FROM_EMAIL="lustlashes70@gmail.com"
 SMTP_USE_TLS="true"
 ```
+
+Pentru Gmail, activeaza 2-Step Verification in contul Google, apoi mergi la
+Security -> App passwords si genereaza o parola pentru Mail. Pune parola aceea
+in `SMTP_PASSWORD`, nu parola normala a contului. Dupa ce modifici `backend/.env`,
+reporneste backend-ul ca sa incarce noile variabile. Nu comita niciodata
+`backend/.env`.
 
 Ruleaza migrarea si backend-ul:
 
