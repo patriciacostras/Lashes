@@ -2,21 +2,21 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
 
 jobs:
-  test:
+  backend:
+    name: Backend tests
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: sqlite+pysqlite:///:memory:
-      JWT_SECRET_KEY: test-secret-key-with-more-than-32-characters
-      ADMIN_USERNAME: patri
-      ADMIN_PASSWORD_HASH: $2b$12$7i4i2dCInNzfpiujGf.2C.0QUhTceUvff4ihxHvz9RB6GQg3B9wlG
-      ADMIN_EMAIL: lustlashes70@gmail.com
-      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8000
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
-      NEXT_PUBLIC_BACKEND_ADMIN_URL: http://localhost:8000/admin
+      DATABASE_URL: "sqlite+pysqlite:///:memory:"
+      JWT_SECRET_KEY: "test-secret-key-with-more-than-32-characters"
+      ADMIN_USERNAME: "patri"
+      ADMIN_PASSWORD_HASH: "$2b$12$7i4i2dCInNzfpiujGf.2C.0QUhTceUvff4ihxHvz9RB6GQg3B9wlG"
+      ADMIN_EMAIL: "lustlashes70@gmail.com"
+      ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:8000"
 
     steps:
       - name: Checkout
@@ -28,11 +28,22 @@ jobs:
           python-version: "3.12"
 
       - name: Install backend dependencies
-        run: pip install -r backend/requirements-dev.txt
+        run: python -m pip install -r backend/requirements-dev.txt
 
-      - name: Backend tests
+      - name: Run backend tests
         working-directory: backend
-        run: pytest --cov=app --cov-report=term-missing --cov-fail-under=90
+        run: python -m pytest --cov=app --cov-report=term-missing --cov-fail-under=90
+
+  frontend:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_API_BASE_URL: "http://localhost:8000"
+      NEXT_PUBLIC_BACKEND_ADMIN_URL: "http://localhost:8000/admin"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
