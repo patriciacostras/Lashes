@@ -259,6 +259,13 @@ button {
   transform: none;
 }
 
+.primary-button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.25);
+  opacity: 0.55;
+  transform: none;
+}
+
 .hero {
   display: grid;
   gap: 30px;

@@ -184,6 +184,12 @@ export function BookingApp() {
   const currentMonth = startOfMonth(visibleMonth);
   const canGoPrev = currentMonth > startOfMonth(bookingWindow.today);
   const canGoNext = addMonths(currentMonth, 1) <= startOfMonth(bookingWindow.maxDate);
+  const canSubmitBooking =
+    form.clientName.trim().length >= 2 &&
+    form.clientEmail.trim().length > 0 &&
+    Boolean(selectedDateIso) &&
+    Boolean(selectedSlot) &&
+    Boolean(selectedService);
 
   useEffect(() => {
     setSelectedSlot(slots[0]?.iso ?? "");
@@ -203,8 +209,14 @@ export function BookingApp() {
   async function submitBooking(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!selectedSlot || !selectedService) {
-      setStatus({ type: "error", text: "Alege un serviciu si o ora disponibila." });
+    if (
+      !form.clientName.trim() ||
+      !form.clientEmail.trim() ||
+      !selectedDateIso ||
+      !selectedSlot ||
+      !selectedService
+    ) {
+      setStatus({ type: "error", text: "Completeaza numele, emailul, ziua si ora programarii." });
       return;
     }
 
@@ -432,6 +444,7 @@ export function BookingApp() {
                 Email pentru confirmare
                 <input
                   className="pulse-focus"
+                  required
                   type="email"
                   value={form.clientEmail}
                   onChange={(event) => setForm({ ...form, clientEmail: event.target.value })}
@@ -452,7 +465,12 @@ export function BookingApp() {
               <p className={`status ${status.type === "idle" ? "" : status.type}`}>
                 {status.text}
               </p>
-              <button className="primary-button clickable" disabled={isSubmitting} type="submit">
+              <button
+                className="primary-button clickable"
+                disabled={isSubmitting || !canSubmitBooking}
+                title={!canSubmitBooking ? "Completeaza numele, emailul, ziua si ora." : undefined}
+                type="submit"
+              >
                 <CalendarCheck size={18} /> {isSubmitting ? "Se trimite" : "Trimite"}
               </button>
             </div>
