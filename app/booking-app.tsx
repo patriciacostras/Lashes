@@ -40,6 +40,7 @@ type CalendarDay = {
   isBlocked: boolean;
   isDisabled: boolean;
   isPast: boolean;
+  isBeyondWindow: boolean;
   isSelected: boolean;
 };
 
@@ -95,7 +96,8 @@ export function BookingApp() {
   const [selectedServiceId, setSelectedServiceId] = useState(defaultServices[0].id);
   const [selectedSlot, setSelectedSlot] = useState("");
   const [blockedSlots, setBlockedSlots] = useState<BlockedSlot[]>([]);
-  const bookingWindow = useMemo(() => getBookingWindow(), []);
+  const [todayKey, setTodayKey] = useState(() => formatDateKey(new Date()));
+  const bookingWindow = useMemo(() => getBookingWindow(parseDateKey(todayKey)), [todayKey]);
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()));
   const [selectedDateIso, setSelectedDateIso] = useState(() => formatDateKey(new Date()));
   const [hasHeroImage, setHasHeroImage] = useState(true);
@@ -116,6 +118,13 @@ export function BookingApp() {
   useEffect(() => {
     setMounted(true);
     setCookiesAccepted(localStorage.getItem("lustlashes_cookies_ok") === "1");
+  }, []);
+
+  useEffect(() => {
+    const refreshToday = () => setTodayKey(formatDateKey(new Date()));
+    refreshToday();
+    const timer = window.setInterval(refreshToday, 60 * 1000);
+    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -179,6 +188,17 @@ export function BookingApp() {
   useEffect(() => {
     setSelectedSlot(slots[0]?.iso ?? "");
   }, [slots]);
+
+  useEffect(() => {
+    const selectedDay = parseDateKey(selectedDateIso);
+    if (selectedDay < bookingWindow.today || selectedDay > bookingWindow.maxDate) {
+      setSelectedDateIso(formatDateKey(bookingWindow.today));
+    }
+
+    if (startOfMonth(visibleMonth) < startOfMonth(bookingWindow.today)) {
+      setVisibleMonth(startOfMonth(bookingWindow.today));
+    }
+  }, [bookingWindow, selectedDateIso, visibleMonth]);
 
   async function submitBooking(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -258,10 +278,10 @@ export function BookingApp() {
           </span>
           <h1 className="animate-fade-in-delay-2">Da, chiar eu sunt Patri Gene</h1>
           <p className="animate-fade-in-delay-3">
-            Program flexibil dupa 18:00 pana la 04:00 in timpul saptamanii,
-            iar sambata si duminica toata ziua. Stam si toata noaptea daca
-            e nevoie si nu mai gasesti loc nicaieri. Genele colorate sunt
-            welcomed oricand — spune-mi ce nuanta vrei.
+            Programari intre 18:00 si 00:00, cu sloturi din 2 in 2 ore.
+            Daca vrei dupa miezul noptii sau in afara intervalului, scrie-mi
+            pe Instagram si vedem ce loc gasim. Genele colorate sunt welcomed
+            oricand — spune-mi ce nuanta vrei.
           </p>
           <div className="hero-actions">
             <a className="primary-button clickable" href="#booking">
@@ -294,7 +314,7 @@ export function BookingApp() {
               <span>servicii</span>
             </span>
             <span className="mini-stat hover-glow">
-              <strong>18-04</strong>
+              <strong>18-00</strong>
               <span>program</span>
             </span>
             <span className="mini-stat hover-glow">
@@ -312,11 +332,20 @@ export function BookingApp() {
         </div>
         <div className="service-sections">
           {groupServices(services).map((group, groupIndex) => (
-            <section className={`service-group animate-fade-in-delay-${Math.min(groupIndex + 1, 3)}`} key={group.title}>
+            <section
+              className={[
+                "service-group",
+                group.title === "Demontare" ? "removal-group" : "",
+                `animate-fade-in-delay-${Math.min(groupIndex + 1, 3)}`
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              key={group.title}
+            >
               <h3>
                 <WandSparkles size={18} /> {group.title}
               </h3>
-              {group.title === "Aplicare & intretinere" && (
+              {group.title !== "Demontare" && (
                 <div className="price-guide">
                   <span className="price-guide-title">Preturi orientative</span>
                   <div className="price-guide-row">
@@ -353,7 +382,8 @@ export function BookingApp() {
         <div className="section-title">
           <h2>Booking</h2>
           <p>
-            Daca vrei intre 09:00 si 18:00, scrie-mi pe Instagram la{" "}
+            Programarile online sunt intre 18:00 si 00:00. Daca vrei in alt
+            interval, scrie-mi pe Instagram la{" "}
             <a className="inline-link" href={INSTAGRAM_URL}>
               @{INSTAGRAM_HANDLE}
             </a>
@@ -472,7 +502,8 @@ export function BookingApp() {
                     day.inMonth ? "" : "outside",
                     day.isSelected ? "active" : "",
                     day.isBlocked ? "blocked" : "",
-                    day.isPast ? "past" : ""
+                    day.isPast ? "past" : "",
+                    day.isBeyondWindow ? "unavailable" : ""
                   ]
                     .filter(Boolean)
                     .join(" ")}
@@ -488,7 +519,7 @@ export function BookingApp() {
             </div>
             <div className="slot-heading">
               <strong>Ore disponibile</strong>
-              <span>Sloturile apar din 2 in 2 ore. Luni-vineri 18:00-04:00, weekend non-stop.</span>
+              <span>Sloturile apar din 2 in 2 ore, intre 18:00 si 00:00. Pentru alte ore, scrie-mi pe Instagram.</span>
             </div>
             <div className="slot-grid">
               {slots.length > 0 ? (
@@ -603,11 +634,12 @@ function groupServices(services: Service[]) {
   const removal = services.filter((service) => service.name.startsWith("Demontare"));
   const groups: { title: string; items: Service[] }[] = [];
 
-  if (application.length > 0 || maintenance.length > 0) {
-    groups.push({
-      title: "Aplicare & intretinere",
-      items: [...application, ...maintenance]
-    });
+  if (application.length > 0) {
+    groups.push({ title: "Aplicare", items: application });
+  }
+
+  if (maintenance.length > 0) {
+    groups.push({ title: "Intretinere", items: maintenance });
   }
 
   if (removal.length > 0) {
@@ -625,7 +657,7 @@ function buildSlotsForDate(date: Date, durationMin: number, blockedSlots: Blocke
     return slots;
   }
 
-  for (const hour of getDisplayHours(date)) {
+  for (const hour of getDisplayHours()) {
     const slot = new Date(date);
     slot.setHours(hour, 0, 0, 0);
     const endsAt = new Date(slot.getTime() + durationMin * 60 * 1000);
@@ -647,17 +679,8 @@ function buildSlotsForDate(date: Date, durationMin: number, blockedSlots: Blocke
   return slots;
 }
 
-function getDisplayHours(date: Date) {
-  const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-  return isWeekend ? rangeHours(0, 24, 2) : [18, 20, 22, 0, 2];
-}
-
-function rangeHours(start: number, end: number, step: number) {
-  const hours: number[] = [];
-  for (let hour = start; hour < end; hour += step) {
-    hours.push(hour);
-  }
-  return hours;
+function getDisplayHours() {
+  return [18, 20, 22];
 }
 
 function formatServicePrice(service: Service) {
@@ -699,13 +722,14 @@ function buildCalendarDays({
       isBlocked,
       isDisabled: !inMonth || isPast || isBeyondWindow || isBlocked,
       isPast,
+      isBeyondWindow,
       isSelected: selectedDateIso === isoDate
     };
   });
 }
 
-function getBookingWindow() {
-  const today = startOfDay(new Date());
+function getBookingWindow(currentDate: Date) {
+  const today = startOfDay(currentDate);
   return {
     today,
     maxDate: addMonths(today, BOOKING_WINDOW_MONTHS)
@@ -777,13 +801,7 @@ function isSlotAllowed(startsAt: Date, endsAt: Date) {
 }
 
 function isOpenAtLocal(date: Date) {
-  const day = date.getDay();
   const hour = date.getHours() + date.getMinutes() / 60;
-  const isWeekend = day === 0 || day === 6;
 
-  if (isWeekend) {
-    return true;
-  }
-
-  return hour >= 18 || hour < 4;
+  return hour >= 18;
 }

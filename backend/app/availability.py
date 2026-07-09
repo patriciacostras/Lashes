@@ -5,7 +5,6 @@ from zoneinfo import ZoneInfo
 
 TIMEZONE = ZoneInfo("Europe/Bucharest")
 WEEKDAY_NIGHT_START = 18
-WEEKDAY_NIGHT_END = 4
 SAMPLE_STEP_MINUTES = 30
 
 
@@ -15,10 +14,7 @@ def get_end_date(starts_at: datetime, duration_min: int) -> datetime:
 
 def is_open_at(moment: datetime) -> bool:
     local = moment.astimezone(TIMEZONE)
-    is_weekend = local.weekday() in (5, 6)
-    if is_weekend:
-        return True
-    return local.hour >= WEEKDAY_NIGHT_START or local.hour < WEEKDAY_NIGHT_END
+    return local.hour >= WEEKDAY_NIGHT_START
 
 
 def is_inside_business_hours(starts_at: datetime, ends_at: datetime) -> bool:

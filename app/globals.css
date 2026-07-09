@@ -486,7 +486,8 @@ h1 {
 
 .service-sections {
   display: grid;
-  gap: 26px;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .care-grid {
@@ -525,11 +526,15 @@ h1 {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  gap: 10px;
-  justify-content: space-between;
-  line-height: 1.55;
+  gap: 12px;
+  justify-content: center;
+  line-height: 1.35;
   margin: 0;
-  padding-left: 20px;
+  padding-left: 1.15rem;
+}
+
+.care-list li {
+  padding-left: 2px;
 }
 
 .care-list li::marker {
@@ -602,7 +607,12 @@ h1 {
 
 .service-group {
   display: grid;
-  gap: 14px;
+  align-content: start;
+  gap: 12px;
+}
+
+.service-group.removal-group {
+  grid-column: 1 / -1;
 }
 
 .service-group > h3 {
@@ -617,7 +627,7 @@ h1 {
 
 .service-grid {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   grid-template-columns: 1fr;
 }
 
@@ -631,9 +641,9 @@ h1 {
   box-shadow: 0 4px 0 rgba(158, 14, 90, 0.8);
   cursor: pointer;
   display: grid;
-  gap: 8px;
-  grid-template-columns: minmax(130px, 0.8fr) minmax(150px, 1fr) auto;
-  min-height: 54px;
+  gap: 6px;
+  grid-template-columns: 1fr auto;
+  min-height: 48px;
   padding: 8px 10px;
   transition:
     transform 180ms ease,
@@ -701,15 +711,17 @@ h1 {
 }
 
 .service-card h4 {
-  font-size: 0.98rem;
+  font-size: 0.94rem;
   margin: 0;
 }
 
 .service-card p {
   color: var(--muted);
-  font-size: 0.82rem;
-  line-height: 1.4;
+  font-size: 0.76rem;
+  grid-column: 1 / -1;
+  line-height: 1.25;
   margin: 0;
+  text-align: center;
 }
 
 .service-meta {
@@ -727,7 +739,7 @@ h1 {
   border-radius: 999px;
   color: #ffd7ea;
   display: inline-flex;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 900;
   gap: 6px;
   padding: 6px 9px;
@@ -865,8 +877,26 @@ textarea:focus {
     ),
     #10050c;
   border-color: rgba(255, 193, 221, 0.34);
+  box-shadow:
+    inset 0 0 18px rgba(0, 0, 0, 0.55),
+    0 4px 12px rgba(0, 0, 0, 0.35);
   color: rgba(255, 241, 248, 0.45);
   opacity: 0.58;
+}
+
+.calendar-day.unavailable {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 114, 182, 0.08) 0 7px,
+      rgba(22, 6, 17, 0.92) 7px 14px
+    ),
+    #140711;
+  border-color: rgba(255, 155, 204, 0.42);
+  box-shadow:
+    inset 0 0 20px rgba(0, 0, 0, 0.62),
+    0 4px 14px rgba(0, 0, 0, 0.36);
+  color: rgba(255, 215, 234, 0.55);
 }
 
 .calendar-day.active {
@@ -892,6 +922,7 @@ textarea:focus {
 
 .calendar-day:disabled {
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 .slot-heading {
@@ -1286,6 +1317,10 @@ select option {
 @media (max-width: 960px) {
   .hero,
   .booking-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .service-sections {
     grid-template-columns: 1fr;
   }
 

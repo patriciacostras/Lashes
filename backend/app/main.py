@@ -155,7 +155,7 @@ def api_create_appointment(
     if not is_inside_business_hours(starts_at, ends_at):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Alege un interval dupa 18:00 pana la 04:00, luni-vineri, sau oricand in weekend.",
+            detail="Alege un interval intre 18:00 si 00:00. Pentru alte ore, scrie-mi pe Instagram.",
         )
 
     if crud.has_booking_conflict(db, starts_at, ends_at):
@@ -266,7 +266,7 @@ def admin_dashboard(
 ):
     csrf_token = create_csrf_token()
     window_start = datetime.now(timezone.utc) - timedelta(days=1)
-    window_end = window_start + timedelta(days=120)
+    window_end = window_start + timedelta(days=365)
     appointments = crud.list_appointments(db)
     blocked_slots = crud.list_blocked_slots(db, window_start, window_end)
     page = templates.TemplateResponse(
