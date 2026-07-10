@@ -586,6 +586,11 @@ export function BookingApp() {
               <li>Daca au ramas mai putin de 40% gene sau au trecut peste 4 saptamani, este recomandat set nou.</li>
               <li>Nu freca ochii, nu trage de extensii si evita produsele pe baza de ulei in jurul ochilor.</li>
             </ul>
+            <img
+              alt="Lash aftercare rules"
+              className="aftercare-rules-image"
+              src="/aftercare-rules.png"
+            />
           </article>
           <article className="care-card retention-card" aria-label="Criterii refill sau set nou">
             <h3>Refill or new set?</h3>

@@ -88,12 +88,12 @@ button {
 
 .brand-logo-small {
   aspect-ratio: 1 / 1;
-  border: 2px solid #fff5fa;
-  border-radius: 50%;
+  border: 0;
+  border-radius: 0;
   box-shadow: none;
   display: block;
   height: clamp(64px, 9vw, 92px);
-  object-fit: cover;
+  object-fit: contain;
   width: clamp(64px, 9vw, 92px);
 }
 
@@ -500,7 +500,7 @@ h1 {
 .care-grid {
   align-items: stretch;
   display: grid;
-  gap: 16px;
+  gap: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -508,10 +508,11 @@ h1 {
   background: var(--panel);
   border: 2px solid var(--ink);
   border-radius: 8px;
-  box-shadow: 0 9px 0 #9e0e5a;
+  box-shadow: 0 6px 0 #9e0e5a;
   display: flex;
   flex-direction: column;
-  padding: 18px;
+  height: 100%;
+  padding: 12px;
   transition:
     border-color 180ms ease,
     box-shadow 180ms ease;
@@ -519,13 +520,13 @@ h1 {
 
 .care-card:hover {
   border-color: #ff9bcc;
-  box-shadow: 0 9px 0 #9e0e5a, 0 0 24px rgba(255, 49, 147, 0.22);
+  box-shadow: 0 6px 0 #9e0e5a, 0 0 20px rgba(255, 49, 147, 0.2);
 }
 
 .care-card h3 {
   color: #ff9bcc;
-  font-size: 1.25rem;
-  margin: 0 0 12px;
+  font-size: 1rem;
+  margin: 0 0 8px;
 }
 
 .care-list {
@@ -533,11 +534,12 @@ h1 {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  gap: 12px;
-  justify-content: center;
-  line-height: 1.35;
+  gap: 7px;
+  justify-content: flex-start;
+  line-height: 1.25;
   margin: 0;
   padding-left: 1.15rem;
+  font-size: 0.86rem;
 }
 
 .care-list li {
@@ -548,6 +550,17 @@ h1 {
   color: var(--pink-strong);
 }
 
+.aftercare-rules-image {
+  border: 0;
+  border-radius: 6px;
+  display: block;
+  margin-top: auto;
+  max-height: 160px;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+}
+
 .retention-card {
   background:
     linear-gradient(180deg, rgba(255, 127, 196, 0.14), rgba(22, 6, 17, 0.96)),
@@ -556,20 +569,21 @@ h1 {
 
 .retention-visual {
   display: grid;
-  gap: 12px;
+  gap: 8px;
 }
 
 .retention-example {
   display: grid;
-  gap: 7px;
+  gap: 5px;
   margin: 0;
 }
 
 .retention-example img {
   aspect-ratio: 16 / 7;
-  border: 2px solid #ff9bcc;
-  border-radius: 8px;
+  border: 0;
+  border-radius: 6px;
   display: block;
+  max-height: 96px;
   object-fit: cover;
   width: 100%;
 }
@@ -606,9 +620,9 @@ h1 {
 
 .retention-example figcaption {
   color: #ffd7ea;
-  font-size: 0.84rem;
+  font-size: 0.7rem;
   font-weight: 900;
-  line-height: 1.35;
+  line-height: 1.2;
   margin: 0;
 }
 
@@ -754,15 +768,16 @@ h1 {
 }
 
 .booking-layout {
-  align-items: start;
+  align-items: stretch;
   display: grid;
-  gap: 22px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.86fr);
 }
 
 .booking-column {
   display: grid;
   gap: 14px;
+  grid-template-rows: auto 1fr;
   min-width: 0;
 }
 
@@ -800,7 +815,8 @@ h1 {
   border: 2px solid var(--ink);
   border-radius: 8px;
   box-shadow: var(--shadow);
-  padding: 16px;
+  min-height: 100%;
+  padding: 14px;
 }
 
 .booking-form,
@@ -872,26 +888,26 @@ textarea:focus {
 .month-toolbar {
   align-items: center;
   display: grid;
-  gap: 8px;
-  grid-template-columns: 36px 1fr 36px;
-  margin-bottom: 8px;
+  gap: 6px;
+  grid-template-columns: 32px 1fr 32px;
+  margin-bottom: 6px;
 }
 
 .month-toolbar strong {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   text-align: center;
   text-transform: capitalize;
 }
 
 .month-grid {
   display: grid;
-  gap: 5px;
+  gap: 4px;
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .weekday {
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   font-weight: 900;
   text-align: center;
 }
@@ -904,12 +920,13 @@ textarea:focus {
   color: var(--ink);
   display: grid;
   gap: 2px;
-  height: clamp(38px, 4.2vw, 54px);
+  height: clamp(32px, 3.2vw, 44px);
   justify-items: center;
-  padding: 4px;
+  padding: 3px;
 }
 
 .calendar-day span {
+  font-size: 0.86rem;
   font-weight: 900;
 }
 
@@ -983,20 +1000,20 @@ textarea:focus {
 
 .slot-heading {
   display: grid;
-  gap: 4px;
-  margin: 10px 0 8px;
+  gap: 3px;
+  margin: 8px 0 6px;
 }
 
 .slot-heading span {
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   font-weight: 800;
   line-height: 1.3;
 }
 
 .slot-grid {
   display: grid;
-  gap: 6px;
+  gap: 5px;
   grid-template-columns: repeat(3, 1fr);
 }
 
@@ -1005,10 +1022,10 @@ textarea:focus {
   border: 2px solid #ffc1dd;
   border-radius: 8px;
   color: var(--ink);
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   font-weight: 900;
-  min-height: 38px;
-  padding: 6px;
+  min-height: 32px;
+  padding: 5px;
 }
 
 .slot-button.active {
