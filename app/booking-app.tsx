@@ -452,7 +452,7 @@ export function BookingApp() {
                     placeholder="clienta@email.ro"
                   />
                 </label>
-                <label className="field full">
+                <label className="field full details-field">
                   Detalii
                   <textarea
                     className="pulse-focus"
