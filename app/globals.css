@@ -753,10 +753,44 @@ h1 {
 }
 
 .booking-layout {
-  align-items: start;
+  align-items: stretch;
   display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.booking-column {
+  display: grid;
+  gap: 14px;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+}
+
+.booking-panel-title {
+  align-items: flex-end;
+  display: flex;
   gap: 18px;
-  grid-template-columns: 0.9fr 1.1fr;
+  justify-content: space-between;
+  min-height: 88px;
+}
+
+.booking-panel-title h2 {
+  font-size: clamp(2.35rem, 5vw, 4rem);
+  letter-spacing: 0;
+  line-height: 0.95;
+  margin: 0;
+}
+
+.booking-panel-title p {
+  align-items: center;
+  color: var(--muted);
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  line-height: 1.35;
+  margin: 0 0 6px;
+  max-width: 360px;
+  text-align: right;
 }
 
 .booking-form,
@@ -766,7 +800,14 @@ h1 {
   border: 2px solid var(--ink);
   border-radius: 8px;
   box-shadow: var(--shadow);
+  height: 100%;
   padding: 18px;
+}
+
+.booking-form,
+.calendar-panel {
+  display: flex;
+  flex-direction: column;
 }
 
 .calendar-panel {
@@ -777,7 +818,7 @@ h1 {
 
 .field-grid {
   display: grid;
-  gap: 12px;
+  gap: 11px;
   grid-template-columns: 1fr 1fr;
 }
 
@@ -803,12 +844,12 @@ textarea {
   border-radius: 8px;
   color: var(--ink);
   outline: none;
-  padding: 12px 13px;
+  padding: 10px 12px;
   width: 100%;
 }
 
 textarea {
-  min-height: 96px;
+  min-height: 78px;
   resize: vertical;
 }
 
@@ -824,7 +865,7 @@ textarea:focus {
   display: grid;
   gap: 10px;
   grid-template-columns: 40px 1fr 40px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .month-toolbar strong {
@@ -835,7 +876,7 @@ textarea:focus {
 
 .month-grid {
   display: grid;
-  gap: 7px;
+  gap: 6px;
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
@@ -856,8 +897,8 @@ textarea:focus {
   display: grid;
   gap: 2px;
   justify-items: center;
-  min-height: 48px;
-  padding: 6px;
+  min-height: 42px;
+  padding: 5px;
 }
 
 .calendar-day span {
@@ -935,7 +976,7 @@ textarea:focus {
 .slot-heading {
   display: grid;
   gap: 4px;
-  margin: 16px 0 10px;
+  margin: 12px 0 8px;
 }
 
 .slot-heading span {
@@ -946,7 +987,7 @@ textarea:focus {
 
 .slot-grid {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   grid-template-columns: repeat(3, 1fr);
 }
 
@@ -984,7 +1025,8 @@ textarea:focus {
   flex-wrap: wrap;
   gap: 12px;
   justify-content: space-between;
-  margin-top: 14px;
+  margin-top: auto;
+  padding-top: 14px;
 }
 
 .status {
@@ -1327,6 +1369,10 @@ select option {
     grid-template-columns: 1fr;
   }
 
+  .booking-column {
+    grid-template-rows: auto;
+  }
+
   .service-sections {
     grid-template-columns: 1fr;
   }
@@ -1349,10 +1395,25 @@ select option {
 @media (max-width: 680px) {
   .topbar,
   .section-title,
+  .booking-panel-title,
   .form-footer,
   .site-footer {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .booking-panel-title {
+    gap: 10px;
+    min-height: 0;
+  }
+
+  .booking-panel-title h2 {
+    font-size: clamp(2.4rem, 13vw, 3.4rem);
+  }
+
+  .booking-panel-title p {
+    max-width: none;
+    text-align: left;
   }
 
   .topbar {

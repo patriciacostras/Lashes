@@ -391,169 +391,173 @@ export function BookingApp() {
       </section>
 
       <section className="section animate-fade-in" id="booking">
-        <div className="section-title">
-          <h2>Booking</h2>
-          <p>
-            Programarile online sunt intre 18:00 si 00:00. Daca vrei in alt
-            interval, scrie-mi pe Instagram la{" "}
-            <a className="inline-link" href={INSTAGRAM_URL}>
-              @{INSTAGRAM_HANDLE}
-            </a>
-            .
-          </p>
-        </div>
         <div className="booking-layout">
-          <form className="booking-form hover-lift" onSubmit={submitBooking}>
-            <div className="field-grid">
-              <label className="field full">
-                Serviciu
-                <select
-                  className="pulse-focus"
-                  value={selectedServiceId}
-                  onChange={(event) => setSelectedServiceId(event.target.value)}
-                >
-                  {services.map((service) => (
-                    <option key={service.id} value={service.id}>
-                      {service.name} - {formatServicePrice(service)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="field">
-                Nume
-                <input
-                  className="pulse-focus"
-                  required
-                  minLength={2}
-                  value={form.clientName}
-                  onChange={(event) => setForm({ ...form, clientName: event.target.value })}
-                  placeholder="Numele tau"
-                />
-              </label>
-              <label className="field">
-                Telefon
-                <input
-                  className="pulse-focus"
-                  required
-                  value={form.clientPhone}
-                  onChange={(event) => setForm({ ...form, clientPhone: event.target.value })}
-                  placeholder="07..."
-                />
-              </label>
-              <label className="field full">
-                Email pentru confirmare
-                <input
-                  className="pulse-focus"
-                  required
-                  type="email"
-                  value={form.clientEmail}
-                  onChange={(event) => setForm({ ...form, clientEmail: event.target.value })}
-                  placeholder="clienta@email.ro"
-                />
-              </label>
-              <label className="field full">
-                Detalii
-                <textarea
-                  className="pulse-focus"
-                  value={form.notes}
-                  onChange={(event) => setForm({ ...form, notes: event.target.value })}
-                  placeholder="Preferinte, alergii, stil dorit..."
-                />
-              </label>
-            </div>
-            <div className="form-footer">
-              <p className={`status ${status.type === "idle" ? "" : status.type}`}>
-                {status.text}
+          <div className="booking-column">
+            <div className="booking-panel-title">
+              <h2>Booking</h2>
+              <p>
+                Programarile online sunt intre 18:00 si 00:00. Pentru alte ore,
+                scrie-mi pe Instagram la{" "}
+                <a className="inline-link" href={INSTAGRAM_URL}>
+                  @{INSTAGRAM_HANDLE}
+                </a>
+                .
               </p>
-              <button
-                className="primary-button clickable"
-                disabled={isSubmitting || !canSubmitBooking}
-                title={!canSubmitBooking ? "Completeaza numele, emailul, ziua si ora." : undefined}
-                type="submit"
-              >
-                <CalendarCheck size={18} /> {isSubmitting ? "Se trimite" : "Trimite"}
-              </button>
             </div>
-          </form>
+            <form className="booking-form hover-lift" onSubmit={submitBooking}>
+              <div className="field-grid">
+                <label className="field full">
+                  Serviciu
+                  <select
+                    className="pulse-focus"
+                    value={selectedServiceId}
+                    onChange={(event) => setSelectedServiceId(event.target.value)}
+                  >
+                    {services.map((service) => (
+                      <option key={service.id} value={service.id}>
+                        {service.name} - {formatServicePrice(service)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field">
+                  Nume
+                  <input
+                    className="pulse-focus"
+                    required
+                    minLength={2}
+                    value={form.clientName}
+                    onChange={(event) => setForm({ ...form, clientName: event.target.value })}
+                    placeholder="Numele tau"
+                  />
+                </label>
+                <label className="field">
+                  Telefon
+                  <input
+                    className="pulse-focus"
+                    required
+                    value={form.clientPhone}
+                    onChange={(event) => setForm({ ...form, clientPhone: event.target.value })}
+                    placeholder="07..."
+                  />
+                </label>
+                <label className="field full">
+                  Email pentru confirmare
+                  <input
+                    className="pulse-focus"
+                    required
+                    type="email"
+                    value={form.clientEmail}
+                    onChange={(event) => setForm({ ...form, clientEmail: event.target.value })}
+                    placeholder="clienta@email.ro"
+                  />
+                </label>
+                <label className="field full">
+                  Detalii
+                  <textarea
+                    className="pulse-focus"
+                    value={form.notes}
+                    onChange={(event) => setForm({ ...form, notes: event.target.value })}
+                    placeholder="Preferinte, alergii, stil dorit..."
+                  />
+                </label>
+              </div>
+              <div className="form-footer">
+                <p className={`status ${status.type === "idle" ? "" : status.type}`}>
+                  {status.text}
+                </p>
+                <button
+                  className="primary-button clickable"
+                  disabled={isSubmitting || !canSubmitBooking}
+                  title={!canSubmitBooking ? "Completeaza numele, emailul, ziua si ora." : undefined}
+                  type="submit"
+                >
+                  <CalendarCheck size={18} /> {isSubmitting ? "Se trimite" : "Trimite"}
+                </button>
+              </div>
+            </form>
+          </div>
 
-          <div className="calendar-panel hover-lift">
-            <div className="section-title">
+          <div className="booking-column">
+            <div className="booking-panel-title">
               <h2>Calendar</h2>
               <p>
                 <Moon size={16} /> Alege o zi in urmatoarea luna.
               </p>
             </div>
-            <div className="month-toolbar" aria-label="Schimba luna">
-              <button
-                aria-label="Luna anterioara"
-                className="icon-button clickable"
-                disabled={!canGoPrev}
-                onClick={() => setVisibleMonth(addMonths(visibleMonth, -1))}
-                type="button"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <strong>{monthFormatter.format(visibleMonth)}</strong>
-              <button
-                aria-label="Luna urmatoare"
-                className="icon-button clickable"
-                disabled={!canGoNext}
-                onClick={() => setVisibleMonth(addMonths(visibleMonth, 1))}
-                type="button"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-            <div className="month-grid" aria-label="Calendar programari">
-              {weekdayLabels.map((label, index) => (
-                <span className="weekday" key={`${label}-${index}`}>
-                  {label}
-                </span>
-              ))}
-              {calendarDays.map((day) => (
+            <div className="calendar-panel hover-lift">
+              <div className="month-toolbar" aria-label="Schimba luna">
                 <button
-                  aria-label={`${day.isoDate}${day.isBlocked ? ", concediu" : ""}`}
-                  className={[
-                    "calendar-day",
-                    "clickable",
-                    "pulse-focus",
-                    day.inMonth ? "" : "outside",
-                    day.isSelected ? "active" : "",
-                    day.isBlocked ? "blocked" : "",
-                    day.isPast ? "past" : "",
-                    day.isBeyondWindow ? "unavailable" : ""
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  disabled={day.isDisabled}
-                  key={day.isoDate}
-                  onClick={() => setSelectedDateIso(day.isoDate)}
+                  aria-label="Luna anterioara"
+                  className="icon-button clickable"
+                  disabled={!canGoPrev}
+                  onClick={() => setVisibleMonth(addMonths(visibleMonth, -1))}
                   type="button"
                 >
-                  <span>{day.dayNumber}</span>
-                  {day.isBlocked ? <small>concediu</small> : null}
+                  <ChevronLeft size={18} />
                 </button>
-              ))}
-            </div>
-            <div className="slot-heading">
-              <strong>Ore disponibile</strong>
-              <span>Sloturile apar din 2 in 2 ore, intre 18:00 si 00:00. Pentru alte ore, scrie-mi pe Instagram.</span>
-            </div>
-            <div className="slot-grid">
-              {slots.length > 0 ? (
-                slots.map((slot) => (
+                <strong>{monthFormatter.format(visibleMonth)}</strong>
+                <button
+                  aria-label="Luna urmatoare"
+                  className="icon-button clickable"
+                  disabled={!canGoNext}
+                  onClick={() => setVisibleMonth(addMonths(visibleMonth, 1))}
+                  type="button"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+              <div className="month-grid" aria-label="Calendar programari">
+                {weekdayLabels.map((label, index) => (
+                  <span className="weekday" key={`${label}-${index}`}>
+                    {label}
+                  </span>
+                ))}
+                {calendarDays.map((day) => (
                   <button
-                    className={`slot-button clickable pulse-focus ${slot.iso === selectedSlot ? "active" : ""}`}
-                    key={slot.iso}
-                    onClick={() => setSelectedSlot(slot.iso)}
+                    aria-label={`${day.isoDate}${day.isBlocked ? ", concediu" : ""}`}
+                    className={[
+                      "calendar-day",
+                      "clickable",
+                      "pulse-focus",
+                      day.inMonth ? "" : "outside",
+                      day.isSelected ? "active" : "",
+                      day.isBlocked ? "blocked" : "",
+                      day.isPast ? "past" : "",
+                      day.isBeyondWindow ? "unavailable" : ""
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    disabled={day.isDisabled}
+                    key={day.isoDate}
+                    onClick={() => setSelectedDateIso(day.isoDate)}
                     type="button"
                   >
-                    {slot.label}
+                    <span>{day.dayNumber}</span>
+                    {day.isBlocked ? <small>concediu</small> : null}
                   </button>
-                ))
-              ) : (
-                <p className="empty-slots">Nu sunt ore disponibile in ziua asta.</p>
-              )}
+                ))}
+              </div>
+              <div className="slot-heading">
+                <strong>Ore disponibile</strong>
+                <span>Sloturile apar din 2 in 2 ore, intre 18:00 si 00:00. Pentru alte ore, scrie-mi pe Instagram.</span>
+              </div>
+              <div className="slot-grid">
+                {slots.length > 0 ? (
+                  slots.map((slot) => (
+                    <button
+                      className={`slot-button clickable pulse-focus ${slot.iso === selectedSlot ? "active" : ""}`}
+                      key={slot.iso}
+                      onClick={() => setSelectedSlot(slot.iso)}
+                      type="button"
+                    >
+                      {slot.label}
+                    </button>
+                  ))
+                ) : (
+                  <p className="empty-slots">Nu sunt ore disponibile in ziua asta.</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
