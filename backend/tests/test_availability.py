@@ -16,12 +16,12 @@ def test_weekday_daytime_is_closed() -> None:
 
 
 def test_weekday_night_slot_is_valid() -> None:
-    starts_at = datetime(2026, 7, 6, 19, 0, tzinfo=timezone.utc)
-    ends_at = get_end_date(starts_at, 120)
+    starts_at = datetime(2026, 7, 6, 15, 0, tzinfo=timezone.utc)
+    ends_at = get_end_date(starts_at, 180)
     assert is_inside_business_hours(starts_at, ends_at)
 
 
 def test_slot_crossing_closed_hours_is_rejected() -> None:
-    starts_at = datetime(2026, 7, 6, 22, 0, tzinfo=timezone.utc)
-    ends_at = get_end_date(starts_at, 120)
+    starts_at = datetime(2026, 7, 6, 19, 0, tzinfo=timezone.utc)
+    ends_at = get_end_date(starts_at, 180)
     assert not is_inside_business_hours(starts_at, ends_at)

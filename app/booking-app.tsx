@@ -178,7 +178,7 @@ export function BookingApp() {
     [visibleMonth, bookingWindow, blockedSlots, selectedDateIso]
   );
   const slots = useMemo(
-    () => buildSlotsForDate(selectedDate, selectedService?.durationMin ?? 120, blockedSlots),
+    () => buildSlotsForDate(selectedDate, selectedService?.durationMin ?? 180, blockedSlots),
     [selectedDate, selectedService, blockedSlots]
   );
   const currentMonth = startOfMonth(visibleMonth);
@@ -290,7 +290,7 @@ export function BookingApp() {
           </span>
           <h1 className="animate-fade-in-delay-2">Da, chiar eu sunt Patri Gene</h1>
           <p className="animate-fade-in-delay-3">
-            Programari intre 18:00 si 00:00, cu sloturi din 2 in 2 ore.
+            Programari intre 18:00 si 00:00, cu sloturi din 3 in 3 ore.
             Daca vrei dupa miezul noptii sau in afara intervalului, scrie-mi
             pe Instagram si vedem ce loc gasim. Genele colorate sunt welcomed
             oricand — spune-mi ce nuanta vrei.
@@ -368,7 +368,7 @@ export function BookingApp() {
                     <span className="price-guide-label">Intretinere / refill:</span>
                     <span className="price-guide-value">120 - 190 RON (6D+ la DM)</span>
                   </div>
-                  <span className="price-guide-note">Toate duratele sunt estimative: 120 min.</span>
+                  <span className="price-guide-note">Toate duratele sunt estimative: 180 min.</span>
                 </div>
               )}
               <div className="service-grid">
@@ -540,7 +540,7 @@ export function BookingApp() {
               </div>
               <div className="slot-heading">
                 <strong>Ore disponibile</strong>
-                <span>Sloturile apar din 2 in 2 ore, intre 18:00 si 00:00. Pentru alte ore, scrie-mi pe Instagram.</span>
+                <span>Sloturile apar din 3 in 3 ore, intre 18:00 si 00:00. Pentru alte ore, scrie-mi pe Instagram.</span>
               </div>
               <div className="slot-grid">
                 {slots.length > 0 ? (
@@ -707,7 +707,7 @@ function buildSlotsForDate(date: Date, durationMin: number, blockedSlots: Blocke
 }
 
 function getDisplayHours() {
-  return [18, 20, 22];
+  return [18, 21];
 }
 
 function formatServicePrice(service: Service) {
